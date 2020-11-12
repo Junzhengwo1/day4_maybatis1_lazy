@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kou.dao.IAccountDao">
+
+    <!--抽取重复的sql语句-->
+    <sql id="selectAllAccount">
+        select * from account
+    </sql>
+
+    <!--定义一个封装account和user的resultMap-->
+    <resultMap id="accountUserMap" type="com.kou.domain.Account">
+        <id property="id" column="id"></id>
+        <result property="uid" column="uid"></result>
+        <result property="money" column="money"></result>
+        <!--select属性指定的内容：查询用户的唯一标志-->
+        <!--配置多对一 中的 一表对象-->
+        <association property="user" column="uid" javaType="com.kou.domain.User" select="com.kou.dao.IUserDao.findById"></association>
+    </resultMap>
+
+    <!--配置查询所有-->
+    <select id="findAllAccount" resultMap="accountUserMap">
+        <!--select *from user;-->
+        <include refid="selectAllAccount"></include>
+    </select>
+
+    <select id="findAccountByUid" resultType="com.kou.domain.Account">
+        select * from account where uid=#{uid}
+    </select>
+
+
+
+
+</mapper>
